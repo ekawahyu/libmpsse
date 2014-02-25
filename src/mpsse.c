@@ -49,14 +49,14 @@ struct vid_pid supported_devices[] = {
  * On success, mpsse->open will be set to 1.
  * On failure, mpsse->open will be set to 0.
  */
-struct mpsse_context *MPSSE(enum modes mode, int freq, int endianess)
+struct mpsse_context *MPSSE(enum modes mode, enum pins cs, int freq, int endianess)
 {
 	int i = 0;
 	struct mpsse_context *mpsse = NULL;
 
 	for(i=0; supported_devices[i].vid != 0; i++)
 	{
-		if((mpsse = Open(supported_devices[i].vid, supported_devices[i].pid, mode, freq, endianess, IFACE_A, NULL, NULL)) != NULL)
+		if((mpsse = Open(supported_devices[i].vid, supported_devices[i].pid, mode, cs, freq, endianess, IFACE_A, NULL, NULL)) != NULL)
 		{
 			if(mpsse->open)
 			{
@@ -91,9 +91,9 @@ struct mpsse_context *MPSSE(enum modes mode, int freq, int endianess)
  * On success, mpsse->open will be set to 1.
  * On failure, mpsse->open will be set to 0.
  */
-struct mpsse_context *Open(int vid, int pid, enum modes mode, int freq, int endianess, int interface, const char *description, const char *serial)
+struct mpsse_context *Open(int vid, int pid, enum modes mode, enum pins cs, int freq, int endianess, int interface, const char *description, const char *serial)
 {
-	return OpenIndex(vid, pid, mode, freq, endianess, interface, description, serial, 0);
+	return OpenIndex(vid, pid, mode, cs, freq, endianess, interface, description, serial, 0);
 }
 
 /* 
@@ -113,7 +113,7 @@ struct mpsse_context *Open(int vid, int pid, enum modes mode, int freq, int endi
  * On success, mpsse->open will be set to 1.
  * On failure, mpsse->open will be set to 0.
  */
-struct mpsse_context *OpenIndex(int vid, int pid, enum modes mode, int freq, int endianess, int interface, const char *description, const char *serial, int index)
+struct mpsse_context *OpenIndex(int vid, int pid, enum modes mode, enum pins cs, int freq, int endianess, int interface, const char *description, const char *serial, int index)
 {
 	int status = 0;
 	struct mpsse_context *mpsse = NULL;
@@ -124,7 +124,7 @@ struct mpsse_context *OpenIndex(int vid, int pid, enum modes mode, int freq, int
 		memset(mpsse, 0, sizeof(struct mpsse_context));
 
 		/* Set cs to the default chip select pin */
-		mpsse->cs = CS;
+		mpsse->cs = cs;
 
 		/* Legacy; flushing is no longer needed, so disable it by default. */
 		FlushAfterRead(mpsse, 0);

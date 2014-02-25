@@ -20,7 +20,7 @@
 #define SPI_TRANSFER_SIZE	512
 #define I2C_TRANSFER_SIZE	64
 
-#define LATENCY_MS		2
+#define LATENCY_MS		1
 #define TIMEOUT_DIVISOR		1000000
 #define USB_TIMEOUT		120000
 #define SETUP_DELAY		25000
@@ -114,8 +114,8 @@ enum i2c_ack
 	NACK = 1
 };
 
-#define DEFAULT_TRIS            (SK | DO | GPIO0 | GPIO1 | GPIO2 | GPIO3)  /* SK/DO/CS and GPIOs are outputs, DI is an input (CS is variable, needs to be added at run time)*/
-#define DEFAULT_PORT            (SK)       				   /* SK and CS are high, all others low (CS is variable, needs to be added at run time)*/
+#define DEFAULT_TRIS	(SK | DO) /* SK/DO/CS and GPIOs are outputs, DI is an input (CS is variable, needs to be added at run time)*/
+#define DEFAULT_PORT	(SK) /* SK and CS are high, all others low (CS is variable, needs to be added at run time)*/
 
 enum mpsse_commands
 {
@@ -177,9 +177,9 @@ struct mpsse_context
 	uint8_t rack;
 };
 
-struct mpsse_context *MPSSE(enum modes mode, int freq, int endianess);
-struct mpsse_context *Open(int vid, int pid, enum modes mode, int freq, int endianess, int interface, const char *description, const char *serial);
-struct mpsse_context *OpenIndex(int vid, int pid, enum modes mode, int freq, int endianess, int interface, const char *description, const char *serial, int index);
+struct mpsse_context *MPSSE(enum modes mode, enum pins cs, int freq, int endianess);
+struct mpsse_context *Open(int vid, int pid, enum modes mode, enum pins cs, int freq, int endianess, int interface, const char *description, const char *serial);
+struct mpsse_context *OpenIndex(int vid, int pid, enum modes mode, enum pins cs, int freq, int endianess, int interface, const char *description, const char *serial, int index);
 void Close(struct mpsse_context *mpsse);
 int SetMode(struct mpsse_context *mpsse, int endianess);
 void EnableBitmode(struct mpsse_context *mpsse, int tf);
